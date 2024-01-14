@@ -5,13 +5,13 @@
 
 # roadmap
 
-- Tensor Operations: addition, subtraction, multiplication, division, and more advanced operations like dot products, transposition, and reshaping.
+- ~~Tensor Operations: addition, subtraction, multiplication, division,~~ and more advanced operations like dot products, transposition, and reshaping.
 
 - Automatic Differentiation: basic version of autograd (forward & back propogation)
 
 - Neural Network Layers: some sort of basic neural network layers (fully connected (dense) layers, convolutional layers, and recurrent layers)
 
-- Activation Functions: ReLU, Sigmoid, and Tanh.
+- ~~Activation Functions: ReLU, Sigmoid, and Tanh.~~
 
 - Loss Functions: mean squared error (MSE), cross-entropy, and binary cross-entropy
 
