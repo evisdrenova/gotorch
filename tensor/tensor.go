@@ -82,13 +82,45 @@ func Add(input, other *Tensor) (*Tensor, error) {
 func Subtract(input, other *Tensor) (*Tensor, error) {
 
 	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
-		return nil, fmt.Errorf("the two tensors must have the same shape in order to add them")
+		return nil, fmt.Errorf("the two tensors must have the same shape in order to subtract them")
 	}
 
 	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
 
 	for i := range input.Data {
 		result.Data[i] = input.Data[i] - other.Data[i]
+	}
+
+	return result, nil
+
+}
+
+func Multiply(input, other *Tensor) (*Tensor, error) {
+
+	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+		return nil, fmt.Errorf("the two tensors must have the same shape in order to multiply them")
+	}
+
+	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+
+	for i := range input.Data {
+		result.Data[i] = input.Data[i] * other.Data[i]
+	}
+
+	return result, nil
+
+}
+
+func Divide(input, other *Tensor) (*Tensor, error) {
+
+	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+		return nil, fmt.Errorf("the two tensors must have the same shape in order to divide them")
+	}
+
+	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+
+	for i := range input.Data {
+		result.Data[i] = input.Data[i] / other.Data[i]
 	}
 
 	return result, nil
