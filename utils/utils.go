@@ -16,9 +16,3 @@ func AreSlicesEqual(s1, s2 []int) bool {
 
 	return true
 }
-
-func IsValidTensor(value interface{}) bool {
-
-	return false
-
-}
