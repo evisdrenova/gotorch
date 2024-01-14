@@ -78,3 +78,19 @@ func Add(input, other *Tensor) (*Tensor, error) {
 
 	return result, nil
 }
+
+func Subtract(input, other *Tensor) (*Tensor, error) {
+
+	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+		return nil, fmt.Errorf("the two tensors must have the same shape in order to add them")
+	}
+
+	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+
+	for i := range input.Data {
+		result.Data[i] = input.Data[i] - other.Data[i]
+	}
+
+	return result, nil
+
+}
