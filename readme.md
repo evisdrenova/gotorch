@@ -7,7 +7,6 @@
 # roadmap
 
 - implement barebones tensor lib similar to pytorch
-- implement tensor package, create, update, add, substract, multiply, divide
 - broadcasting? or maybe just stick with requiring they're the same shape right now?
 - ability to load data into a dataframe
 - activation functions (relu, etc)
