@@ -1,5 +1,10 @@
 package tensor
 
+import (
+	"fmt"
+	"gotorch/utils"
+)
+
 /*
 The tensor package handles creating, updating and performing actions on tensors
 */
@@ -12,50 +17,64 @@ type Tensor struct {
 }
 
 // Creates a new tensor and returns a pointer to the tensor
-// spreads the shape param to allow specifying different shaped tensors
-func NewTensor(data []float64, shape ...int) *Tensor {
+func NewTensor(data interface{}, shape ...int) *Tensor {
 
-	if len(data) < 1 {
-		return nil
+	switch v := data.(type) {
+	case int:
+		return &Tensor{Data: []float64{float64(v)}, Shape: []int{1}}
+	case int32:
+		return &Tensor{Data: []float64{float64(v)}, Shape: []int{1}}
+	case int64:
+		return &Tensor{Data: []float64{float64(v)}, Shape: []int{1}}
+	case float64:
+		return &Tensor{Data: []float64{v}, Shape: []int{1}}
+	case []float64:
+		return &Tensor{Data: v, Shape: []int{len(v)}}
+	case [][]float64:
+		return newTensorFrom2DSlice(v)
+	default:
+		panic(fmt.Sprintf("unsupported type: %T", v))
 	}
-
-	numElements := 1
-	for _, dim := range shape {
-		numElements *= dim
-	}
-
-	if numElements != len(data) {
-		return nil
-	}
-
-	return &Tensor{Data: data, Shape: shape}
 }
 
-// creates a new scalar value
-func NewScalar(value float64) *Tensor {
-	return NewTensor([]float64{value}, 1)
-}
+// newTensorFrom2DSlice handles creation of a tensor from a 2D slice
+func newTensorFrom2DSlice(data [][]float64) *Tensor {
+	if len(data) == 0 {
+		return &Tensor{Data: []float64{}, Shape: []int{0, 0}}
+	}
 
-// creates a new vector value
-func NewVector(value []float64) *Tensor {
-	return NewTensor(value, len(value))
-}
+	numRows := len(data)
+	numCols := len(data[0])
+	flatData := make([]float64, 0, numRows*numCols)
 
-// creates a new matrix value
-func NewMatrix(data [][]float64) *Tensor {
-
-	flatData := make([]float64, 0, len(data)*len(data[0]))
-
-	// we flatten the matrix into a 1-dimensional slice to make it easy and fast to work with later
-	// we maintain the matrix shape in the t.Shape field so we can reconstruct the shape if necessary
 	for _, row := range data {
+		if len(row) != numCols {
+			panic("rows of different lengths")
+		}
 		flatData = append(flatData, row...)
 	}
 
-	return NewTensor(flatData, len(data), len(data[0]))
+	return &Tensor{Data: flatData, Shape: []int{numRows, numCols}}
 }
 
 // returns the number of dimensions for a tensor
 func (t *Tensor) Dims() int {
 	return len(t.Shape)
+}
+
+// adds two tensors together
+// note: this does not currently support broadcasting to a common shape i.e. can't add a vector and a matrix
+func Add(input, other *Tensor) (*Tensor, error) {
+
+	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+		return nil, fmt.Errorf("the two tensors must have the same shape in order to add them")
+	}
+
+	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+
+	for i := range input.Data {
+		result.Data[i] = input.Data[i] + other.Data[i]
+	}
+
+	return result, nil
 }
