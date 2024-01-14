@@ -9,22 +9,7 @@ import (
 Unit tests for the Tensor package
 */
 
-func Test_NewTensor(t *testing.T) {
-
-	test := []float64{1.23, 4.56}
-
-	tensor := NewTensor(test)
-
-	if tensor.Data == nil {
-		t.Errorf("the tensor cannot be nil")
-	}
-
-	if !reflect.DeepEqual(tensor.Data, test) {
-		t.Errorf("expeced that the created tensor is a deep copy of test value")
-	}
-}
-
-func Test_NewScalar(t *testing.T) {
+func Test_NewTensorScalar(t *testing.T) {
 
 	scalar := NewTensor(3.14)
 
@@ -40,7 +25,7 @@ func Test_NewScalar(t *testing.T) {
 
 }
 
-func Test_NewVector(t *testing.T) {
+func Test_NewTensorVector(t *testing.T) {
 
 	vector := NewTensor([]float64{1, 2})
 
@@ -56,7 +41,7 @@ func Test_NewVector(t *testing.T) {
 
 }
 
-func Test_NewMatrix1x3(t *testing.T) {
+func Test_NewTensorMatrix1x3(t *testing.T) {
 
 	matrix := NewTensor([][]float64{{1, 2, 3}})
 
@@ -73,7 +58,7 @@ func Test_NewMatrix1x3(t *testing.T) {
 	}
 }
 
-func Test_NewMatrix2x3(t *testing.T) {
+func Test_NewTensorMatrix2x3(t *testing.T) {
 
 	matrix := NewTensor([][]float64{{1, 2, 3}, {4, 5, 6}})
 
@@ -90,7 +75,7 @@ func Test_NewMatrix2x3(t *testing.T) {
 	}
 }
 
-func Test_NewMatrix4x2(t *testing.T) {
+func Test_NewTensorMatrix4x2(t *testing.T) {
 
 	matrix := NewTensor([][]float64{{1, 2}, {3, 4}, {5, 6}, {7, 8}})
 
@@ -107,7 +92,7 @@ func Test_NewMatrix4x2(t *testing.T) {
 	}
 }
 
-func TestDimsScalar(t *testing.T) {
+func TestDimsTensorScalar(t *testing.T) {
 
 	scalar := NewTensor(3)
 
@@ -118,7 +103,7 @@ func TestDimsScalar(t *testing.T) {
 	}
 }
 
-func TestDimsVector(t *testing.T) {
+func TestDimsTensorVector(t *testing.T) {
 
 	vector := NewTensor([]float64{1, 2})
 
@@ -129,7 +114,7 @@ func TestDimsVector(t *testing.T) {
 	}
 }
 
-func TestDimsMatrix(t *testing.T) {
+func TestDimsTensorMatrix(t *testing.T) {
 
 	matrix := NewTensor([][]float64{{1, 2, 3}, {4, 5, 6}})
 
@@ -150,7 +135,7 @@ func Test_AddError(t *testing.T) {
 	}
 }
 
-func Test_AddTenso1D(t *testing.T) {
+func Test_AddTensorScalar(t *testing.T) {
 	s1 := NewTensor(2)
 	s2 := NewTensor(4)
 
@@ -166,7 +151,7 @@ func Test_AddTenso1D(t *testing.T) {
 
 }
 
-func Test_AddTensor1D(t *testing.T) {
+func Test_AddTensorVector(t *testing.T) {
 	s1 := NewTensor([]float64{6, 3})
 	s2 := NewTensor([]float64{4, 1})
 
@@ -183,7 +168,7 @@ func Test_AddTensor1D(t *testing.T) {
 	}
 }
 
-func Test_AddTensor2D(t *testing.T) {
+func Test_AddTensorMatrix(t *testing.T) {
 	s1 := NewTensor([][]float64{{6, 3}, {2, 6}})
 	s2 := NewTensor([][]float64{{4, 1}, {5, 9}})
 
