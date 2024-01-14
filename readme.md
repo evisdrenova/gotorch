@@ -2,7 +2,6 @@
 
 1. because i wanna learn pytorch and how its implemeneted
 2. don't wanna use python, i wanna use go
-3. i think go is a better runtime for this anyways since it has static typing and native concurrency
 
 # roadmap
 
