@@ -5,7 +5,22 @@
 
 # roadmap
 
-- implement barebones tensor lib similar to pytorch
-- broadcasting? or maybe just stick with requiring they're the same shape right now?
-- ability to load data into a dataframe
-- activation functions (relu, etc)
+- Tensor Operations: addition, subtraction, multiplication, division, and more advanced operations like dot products, transposition, and reshaping.
+
+- Automatic Differentiation: basic version of autograd (forward & back propogation)
+
+- Neural Network Layers: some sort of basic neural network layers (fully connected (dense) layers, convolutional layers, and recurrent layers)
+
+- Activation Functions: ReLU, Sigmoid, and Tanh.
+
+- Loss Functions: mean squared error (MSE), cross-entropy, and binary cross-entropy
+
+- Optimizers: Stochastic Gradient Descent (SGD), Adam, and RMSprop
+
+- Data Handling: loading, save, batching
+
+- Model Definition and Training Loop: A framework to define models, compile them with loss functions and optimizers, and a training loop to fit models to data.
+
+- GPU Support ???????
+
+- Serialization: saving and loading models and their weights.
