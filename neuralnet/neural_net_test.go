@@ -273,3 +273,68 @@ func Test_BCELossMatrix(t *testing.T) {
 	}
 
 }
+
+func Test_CategoricalCrossEntropyLossError(t *testing.T) {
+
+	input := tensor.NewTensor(4)
+	target := tensor.NewTensor([]float64{9, 2})
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+
+	_ = CategoricalCrossEntropyLoss(input, target)
+}
+
+func Test_CBCELossVector(t *testing.T) {
+	predictions := tensor.NewTensor([]float64{0.8, 0.2})
+	targets := tensor.NewTensor([]float64{1, 0})
+
+	var expectedLoss float64
+	var numClasses int
+
+	if len(predictions.Shape) == 1 { // Vector case
+		numClasses = len(predictions.Data)
+		for c := 0; c < numClasses; c++ {
+			expectedLoss -= targets.Data[c] * math.Log(predictions.Data[c])
+		}
+	}
+
+	expectedLoss /= float64(len(predictions.Data) / numClasses)
+	result := CategoricalCrossEntropyLoss(predictions, targets)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("CategoricalCrossEntropyLoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedLoss) > 1e-6 {
+		t.Errorf("CategoricalCrossEntropyLoss incorrect, expected: %v, got: %v", expectedLoss, result.Data[0])
+	}
+}
+
+func Test_CBCELossMatrix(t *testing.T) {
+
+	predictions := tensor.NewTensor([][]float64{{0.7, 0.3}, {0.6, 0.4}})
+	targets := tensor.NewTensor([][]float64{{1, 0}, {1, 0}})
+
+	var expectedLoss float64
+	numClasses := predictions.Shape[1]
+	for i := 0; i < len(predictions.Data); i += numClasses {
+		for c := 0; c < numClasses; c++ {
+			expectedLoss -= targets.Data[i+c] * math.Log(predictions.Data[i+c])
+		}
+	}
+
+	expectedLoss /= float64(len(predictions.Data) / numClasses)
+	result := CategoricalCrossEntropyLoss(predictions, targets)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("CategoricalCrossEntropyLoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedLoss) > 1e-6 {
+		t.Errorf("CategoricalCrossEntropyLoss incorrect, expected: %v, got: %v", expectedLoss, result.Data[0])
+	}
+}

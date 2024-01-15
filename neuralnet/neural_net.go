@@ -74,9 +74,8 @@ func MSELoss(input, target *tensor.Tensor) *tensor.Tensor {
 
 }
 
-// implements cross-entropy loss;
+// implements binary cross-entropy loss for binary class models
 // quantifies the difference between the predicted probability distribution of the model and the actual distribution of the labels and returns a number between [0,1],with 0 being a perfect mode
-
 func BinaryCrossEntropyLoss(predications, target *tensor.Tensor) *tensor.Tensor {
 
 	if len(predications.Data) != len(target.Data) {
@@ -92,6 +91,37 @@ func BinaryCrossEntropyLoss(predications, target *tensor.Tensor) *tensor.Tensor 
 	}
 
 	loss := sum / float64(len(predications.Data))
+
+	return &tensor.Tensor{Data: []float64{loss}, Shape: []int{1}}
+
+}
+
+// implements categorical cross-entropy loss for multi-class models
+// quantifies the difference between the predicted probability distribution of the model and the actual distribution of the labels and returns a number between [0,1],with 0 being a perfect mode
+func CategoricalCrossEntropyLoss(predictions, target *tensor.Tensor) *tensor.Tensor {
+	if len(predictions.Data) != len(target.Data) {
+		panic("input and output tensors must have the same size")
+	}
+
+	var numClasses int
+	var sum float64
+
+	// Check if we are dealing with a vector or a multi-dimensional tensor
+	if len(predictions.Shape) == 1 { // Vector case
+		numClasses = len(predictions.Data)
+		for c := 0; c < numClasses; c++ {
+			sum -= target.Data[c] * math.Log(predictions.Data[c])
+		}
+	} else { // Multi-dimensional tensor case
+		numClasses = predictions.Shape[1]
+		for i := 0; i < len(predictions.Data); i += numClasses {
+			for c := 0; c < numClasses; c++ {
+				sum -= target.Data[i+c] * math.Log(predictions.Data[i+c])
+			}
+		}
+	}
+
+	loss := sum / float64(len(predictions.Data)/numClasses)
 
 	return &tensor.Tensor{Data: []float64{loss}, Shape: []int{1}}
 

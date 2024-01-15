@@ -11,9 +11,9 @@
 
 - Neural Network Layers: some sort of basic neural network layers (fully connected (dense) layers, convolutional layers, and recurrent layers)
 
-- ~~Activation Functions: ReLU, Sigmoid, and Tanh.~~
+- ~~Activation Functions: ReLU, Sigmoid, and Tanh.~~, softmax
 
-- Loss Functions: ~~mean squared error (MSE)~~,and binary cross-entropy, categorical cross entropy loss
+- ~~Loss Functions: mean squared error (MSE),and binary cross-entropy, categorical cross entropy loss~~
 
 - Optimizers: Stochastic Gradient Descent (SGD), Adam, and RMSprop
 
