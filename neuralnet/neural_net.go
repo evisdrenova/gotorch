@@ -126,3 +126,20 @@ func CategoricalCrossEntropyLoss(predictions, target *tensor.Tensor) *tensor.Ten
 	return &tensor.Tensor{Data: []float64{loss}, Shape: []int{1}}
 
 }
+
+// implements the softmax activation function which converts a tensor of float64s to a tensor of probability distributions
+func SoftMax(t *tensor.Tensor) *tensor.Tensor {
+
+	result := make([]float64, len(t.Data))
+
+	var sum float64
+	for _, value := range t.Data {
+		sum += math.Exp(value)
+	}
+
+	for i, value := range t.Data {
+		result[i] = math.Exp(value) / sum
+	}
+
+	return &tensor.Tensor{Data: result, Shape: t.Shape}
+}

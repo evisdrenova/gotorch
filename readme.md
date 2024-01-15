@@ -18,7 +18,7 @@ Knowing the Pytorch is mainly implemented in c++ and c under the covers, I'm not
 
 - Neural Network Layers: some sort of basic neural network layers (fully connected (dense) layers, convolutional layers, and recurrent layers)
 
-- ~~Activation Functions: ReLU, Sigmoid, and Tanh.~~, softmax
+- ~~Activation Functions: ReLU, Sigmoid,Tanh and softmax~~
 
 - ~~Loss Functions: mean squared error (MSE),and binary cross-entropy, categorical cross entropy loss~~
 

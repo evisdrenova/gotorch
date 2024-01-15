@@ -3,6 +3,7 @@ package nn
 import (
 	"gotorch/tensor"
 	"math"
+	"reflect"
 	"testing"
 )
 
@@ -337,4 +338,28 @@ func Test_CBCELossMatrix(t *testing.T) {
 	if math.Abs(result.Data[0]-expectedLoss) > 1e-6 {
 		t.Errorf("CategoricalCrossEntropyLoss incorrect, expected: %v, got: %v", expectedLoss, result.Data[0])
 	}
+}
+
+func Test_SoftmaxVector(t *testing.T) {
+
+	tensor := tensor.NewTensor([]float64{2, 4, 5})
+
+	total := math.Exp(2) + math.Exp(4) + math.Exp(5)
+	expectedSM := []float64{
+		math.Exp(2) / total,
+		math.Exp(4) / total,
+		math.Exp(5) / total,
+	}
+
+	result := SoftMax(tensor)
+
+	if !reflect.DeepEqual(result.Shape, tensor.Shape) {
+		t.Errorf("Softmax shape mismatch, expected: %v, got: %v", tensor.Shape, result.Shape)
+	}
+	for i, v := range result.Data {
+		if math.Abs(v-expectedSM[i]) > 1e-6 {
+			t.Errorf("Softmax value mismatch at index %d, expected: %v, got: %v", i, expectedSM[i], v)
+		}
+	}
+
 }
