@@ -20,7 +20,7 @@ func ReLu(t *tensor.Tensor) *tensor.Tensor {
 	return &tensor.Tensor{Data: result, Shape: t.Shape}
 }
 
-// implements leaky_relu which is like relu but instead of zero'ing out anything less than 0, we multiply it by a small constant
+// implements leaky_relu which is like relu but instead of zero'ing out anything less than 0, we multiply it by a small constant; f(x) = max((x*alpha), x)
 func Leaky_ReLu(t *tensor.Tensor) *tensor.Tensor {
 	result := make([]float64, len(t.Data))
 	for i, val := range t.Data {
@@ -33,6 +33,7 @@ func Leaky_ReLu(t *tensor.Tensor) *tensor.Tensor {
 	return &tensor.Tensor{Data: result, Shape: t.Shape}
 }
 
+// sigmoid activation function: f(x) = 1/(1 + e^(-x))
 func Sigmoid(t *tensor.Tensor) *tensor.Tensor {
 
 	result := make([]float64, len(t.Data))
@@ -43,6 +44,7 @@ func Sigmoid(t *tensor.Tensor) *tensor.Tensor {
 
 }
 
+// tanh activation function; f(x) = (e^(x) - e^(-x))/(e^(x) + e^(-x))
 func Tanh(t *tensor.Tensor) *tensor.Tensor {
 
 	result := make([]float64, len(t.Data))
@@ -50,5 +52,24 @@ func Tanh(t *tensor.Tensor) *tensor.Tensor {
 		result[i] = (math.Exp(t.Data[i]-math.Exp(-t.Data[i])) / (math.Exp(t.Data[i]) + math.Exp(-t.Data[i])))
 	}
 	return &tensor.Tensor{Data: result, Shape: t.Shape}
+
+}
+
+// implements mean squared error loss function; f(x,y) = average[((x1-y1)^2 + (x2-y2)^2  + ... (xn-yn)^2 )]
+func MSELoss(input, target *tensor.Tensor) *tensor.Tensor {
+
+	if len(input.Data) != len(target.Data) {
+		panic("input and output tensors must have the same size")
+	}
+
+	var sum float64
+	for i := range input.Data {
+		diff := input.Data[i] - target.Data[i]
+		sum += diff * diff
+	}
+
+	mse := sum / float64(len(input.Data))
+
+	return &tensor.Tensor{Data: []float64{mse}, Shape: []int{1}}
 
 }

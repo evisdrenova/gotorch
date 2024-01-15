@@ -36,8 +36,24 @@ func Test_Leaky_ReLu(t *testing.T) {
 		}
 	}
 }
+func Test_SigmoidScalar(t *testing.T) {
 
-func Test_Sigmoid(t *testing.T) {
+	tensor := tensor.NewTensor(2)
+
+	result := Sigmoid(tensor)
+
+	expected := []float64{
+		1 / (1 + math.Exp(-2)),
+	}
+
+	for i := range result.Data {
+		if math.Abs(result.Data[i]-expected[i]) > 1e-6 { // using a small threshold for floating point comparison
+			t.Errorf("Sigmoid function not applied correctly at index %d, expected: %v, got: %v", i, expected[i], result.Data[i])
+		}
+	}
+}
+
+func Test_SigmoidVector(t *testing.T) {
 
 	tensor := tensor.NewTensor([]float64{2, -3, 4, -5})
 
@@ -57,7 +73,43 @@ func Test_Sigmoid(t *testing.T) {
 	}
 }
 
-func Test_Tanh(t *testing.T) {
+func Test_SigmoidMatrix(t *testing.T) {
+
+	tensor := tensor.NewTensor([][]float64{{2, -3}, {4, -5}})
+
+	result := Sigmoid(tensor)
+
+	expected := []float64{
+		1 / (1 + math.Exp(-2)),
+		1 / (1 + math.Exp(3)),
+		1 / (1 + math.Exp(-4)),
+		1 / (1 + math.Exp(5)),
+	}
+
+	for i := range result.Data {
+		if math.Abs(result.Data[i]-expected[i]) > 1e-6 { // using a small threshold for floating point comparison
+			t.Errorf("Sigmoid function not applied correctly at index %d, expected: %v, got: %v", i, expected[i], result.Data[i])
+		}
+	}
+}
+
+func Test_TanhScalar(t *testing.T) {
+
+	tensor := tensor.NewTensor(2)
+
+	result := Tanh(tensor)
+
+	expected := []float64{
+		(math.Exp(2-math.Exp(-2)) / (math.Exp(2) + math.Exp(-2))),
+	}
+
+	for i := range result.Data {
+		if math.Abs(result.Data[i]-expected[i]) > 1e-6 { // using a small threshold for floating point comparison
+			t.Errorf("Sigmoid function not applied correctly at index %d, expected: %v, got: %v", i, expected[i], result.Data[i])
+		}
+	}
+}
+func Test_TanhVector(t *testing.T) {
 
 	tensor := tensor.NewTensor([]float64{2, -3, 4, -5})
 
@@ -74,5 +126,92 @@ func Test_Tanh(t *testing.T) {
 		if math.Abs(result.Data[i]-expected[i]) > 1e-6 { // using a small threshold for floating point comparison
 			t.Errorf("Sigmoid function not applied correctly at index %d, expected: %v, got: %v", i, expected[i], result.Data[i])
 		}
+	}
+}
+
+func Test_TanhMatrix(t *testing.T) {
+
+	tensor := tensor.NewTensor([][]float64{{2, -3}, {4, -5}})
+
+	result := Tanh(tensor)
+
+	expected := []float64{
+		(math.Exp(2-math.Exp(-2)) / (math.Exp(2) + math.Exp(-2))),
+		(math.Exp(-3-math.Exp(3)) / (math.Exp(-3) + math.Exp(3))),
+		(math.Exp(4-math.Exp(-4)) / (math.Exp(4) + math.Exp(-4))),
+		(math.Exp(-5-math.Exp(5)) / (math.Exp(-5) + math.Exp(5))),
+	}
+
+	for i := range result.Data {
+		if math.Abs(result.Data[i]-expected[i]) > 1e-6 { // using a small threshold for floating point comparison
+			t.Errorf("Sigmoid function not applied correctly at index %d, expected: %v, got: %v", i, expected[i], result.Data[i])
+		}
+	}
+}
+func Test_MSELossError(t *testing.T) {
+
+	input := tensor.NewTensor(4)
+	target := tensor.NewTensor([]float64{9, 2})
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+
+	_ = MSELoss(input, target)
+}
+
+func Test_MSELScalar(t *testing.T) {
+
+	input := tensor.NewTensor(4)
+	target := tensor.NewTensor(9)
+
+	expectedMSE := (math.Pow(4-9, 2)) / 1
+
+	result := MSELoss(input, target)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("MSELoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedMSE) > 1e-6 {
+		t.Errorf("MSELoss incorrect, expected: %v, got: %v", expectedMSE, result.Data[0])
+	}
+}
+
+func Test_MSELVector(t *testing.T) {
+
+	input := tensor.NewTensor([]float64{2, -3, 4, -5})
+	target := tensor.NewTensor([]float64{6, 23, -2, 8})
+
+	expectedMSE := (math.Pow(2-6, 2) + math.Pow(-3-23, 2) + math.Pow(4-(-2), 2) + math.Pow(-5-8, 2)) / 4
+
+	result := MSELoss(input, target)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("MSELoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedMSE) > 1e-6 {
+		t.Errorf("MSELoss incorrect, expected: %v, got: %v", expectedMSE, result.Data[0])
+	}
+}
+
+func Test_MSELMartix(t *testing.T) {
+
+	input := tensor.NewTensor([][]float64{{2, -3}, {4, -5}})
+	target := tensor.NewTensor([][]float64{{6, 23}, {-2, 8}})
+
+	expectedMSE := (math.Pow(2-6, 2) + math.Pow(-3-23, 2) + math.Pow(4-(-2), 2) + math.Pow(-5-8, 2)) / 4
+
+	result := MSELoss(input, target)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("MSELoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedMSE) > 1e-6 {
+		t.Errorf("MSELoss incorrect, expected: %v, got: %v", expectedMSE, result.Data[0])
 	}
 }
