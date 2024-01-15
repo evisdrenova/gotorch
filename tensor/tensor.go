@@ -29,7 +29,10 @@ func NewTensor(data interface{}, shape ...int) *Tensor {
 	case float64:
 		return &Tensor{Data: []float64{v}, Shape: []int{1}}
 	case []float64:
-		return &Tensor{Data: v, Shape: []int{len(v)}}
+		if len(shape) == 0 {
+			shape = []int{len(v)}
+		}
+		return &Tensor{Data: v, Shape: shape}
 	case [][]float64:
 		return newTensorFrom2DSlice(v)
 	default:
