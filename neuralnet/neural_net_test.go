@@ -215,3 +215,61 @@ func Test_MSELMartix(t *testing.T) {
 		t.Errorf("MSELoss incorrect, expected: %v, got: %v", expectedMSE, result.Data[0])
 	}
 }
+
+func Test_BinaryCrossEntropyLossError(t *testing.T) {
+
+	input := tensor.NewTensor(4)
+	target := tensor.NewTensor([]float64{9, 2})
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+
+	_ = BinaryCrossEntropyLoss(input, target)
+}
+
+func Test_BCELossVector(t *testing.T) {
+
+	predictions := tensor.NewTensor([]float64{0.8, 0.1, 0.6, 0.3})
+	target := tensor.NewTensor([]float64{1, 0, 1, 0})
+
+	var expectedBCE float64
+	for i := range predictions.Data {
+		expectedBCE -= target.Data[i]*math.Log(predictions.Data[i]) + (1-target.Data[i])*math.Log(1-predictions.Data[i])
+	}
+	expectedBCE /= float64(len(predictions.Data))
+
+	result := BinaryCrossEntropyLoss(predictions, target)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("BinaryCrossEntropyLoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedBCE) > 1e-6 {
+		t.Errorf("BinaryCrossEntropyLoss incorrect, expected: %v, got: %v", expectedBCE, result.Data[0])
+	}
+}
+
+func Test_BCELossMatrix(t *testing.T) {
+	input := tensor.NewTensor([][]float64{{0.7, 0.2}, {0.6, 0.3}})
+	target := tensor.NewTensor([][]float64{{1, 0}, {1, 0}})
+
+	var expectedBCE float64
+	for i := range input.Data {
+		expectedBCE -= target.Data[i]*math.Log(input.Data[i]) + (1-target.Data[i])*math.Log(1-input.Data[i])
+	}
+	expectedBCE /= float64(len(input.Data))
+
+	result := BinaryCrossEntropyLoss(input, target)
+
+	if len(result.Shape) != 1 || result.Shape[0] != 1 {
+		t.Errorf("BinaryCrossEntropyLoss should return a scalar, got shape: %v", result.Shape)
+	}
+
+	if math.Abs(result.Data[0]-expectedBCE) > 1e-6 {
+		t.Errorf("BinaryCrossEntropyLoss incorrect, expected: %v, got: %v", expectedBCE, result.Data[0])
+	}
+
+}

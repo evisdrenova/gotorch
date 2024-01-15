@@ -73,3 +73,26 @@ func MSELoss(input, target *tensor.Tensor) *tensor.Tensor {
 	return &tensor.Tensor{Data: []float64{mse}, Shape: []int{1}}
 
 }
+
+// implements cross-entropy loss;
+// quantifies the difference between the predicted probability distribution of the model and the actual distribution of the labels and returns a number between [0,1],with 0 being a perfect mode
+
+func BinaryCrossEntropyLoss(predications, target *tensor.Tensor) *tensor.Tensor {
+
+	if len(predications.Data) != len(target.Data) {
+		panic("input and output tensors must have the same size")
+	}
+
+	var sum float64
+
+	for i := range predications.Data {
+		p := predications.Data[i] //predicated probability
+		y := target.Data[i]       // actual probability
+		sum -= y*math.Log(p) + (1-y)*math.Log(1-p)
+	}
+
+	loss := sum / float64(len(predications.Data))
+
+	return &tensor.Tensor{Data: []float64{loss}, Shape: []int{1}}
+
+}

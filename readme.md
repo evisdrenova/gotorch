@@ -13,7 +13,7 @@
 
 - ~~Activation Functions: ReLU, Sigmoid, and Tanh.~~
 
-- Loss Functions: mean squared error (MSE), cross-entropy, and binary cross-entropy
+- Loss Functions: ~~mean squared error (MSE)~~,and binary cross-entropy, categorical cross entropy loss
 
 - Optimizers: Stochastic Gradient Descent (SGD), Adam, and RMSprop
 
