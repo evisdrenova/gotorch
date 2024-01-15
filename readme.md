@@ -1,7 +1,14 @@
 # why?
 
-1. because i wanna learn pytorch and how its implemeneted
-2. don't wanna use python, i wanna use go
+1. I want to better learn Pytorch and how it works so what better way than to just re-implement some of its core features.
+
+2. I write mainly in Go and haven't come across a lot of ML support in Go
+
+3. I'd rather have a Go ML service instead of spinning up additional infrastructure to just support a python ML service in my Go projects
+
+4. Go's static typing, native concurrency (avoid GIL problem in python), efficient memory management, single binary deployment and more make it a better interface compared to python IMO
+
+Knowing the Pytorch is mainly implemented in c++ and c under the covers, I'm not expecting any performance gains by porting it to Go. But still, will be interesting to see how it compares.
 
 # roadmap
 
