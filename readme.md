@@ -20,9 +20,9 @@ Two other things:
 
 - ~~Tensor Operations: addition, subtraction, multiplication, division,~~ and more advanced operations like dot products, transposition, and reshaping.
 
-~~- way to randomly generate tensors~~
+- ~~way to randomly generate tensors~~
 
-~~- a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)~~
+- ~~a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)~~
 
 - Automatic Differentiation: basic version of autograd (forward & back propogation)
 
