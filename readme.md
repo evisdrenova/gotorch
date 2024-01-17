@@ -41,6 +41,8 @@ Two other things:
 
 - A way to sample a model
 
+- probably want a way to manage model state internally to the model
+
 - GPU Support ???????
 
 - Serialization: saving and loading models and their weights. Probably just model state and weights and not the entire model. [Reference](https://github.com/pytorch/pytorch/blob/761d6799beb3afa03657a71776412a2171ee7533/docs/source/notes/serialization.rst)
