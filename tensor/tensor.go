@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gotorch/utils"
 	"math/rand"
+	"strings"
 )
 
 /*
@@ -150,4 +151,81 @@ func Rand(rows, columns int) (*Tensor, error) {
 
 	return &Tensor{Data: flatData, Shape: []int{rows, columns}}, nil
 
+}
+
+// Given a tensor, FormatTensor will return the tensor the right shape according to the shape property. For example, if the shape of the tensor is []int{2 3},
+// meaning that is a 2x3 matrix, this function will return a multi-dimensional array with two sub arrays, each with three elements, essentially the expanded format of the tensor
+// honestly this is ugly but whatever for now, its just meant as a sanity check
+func FormatTensor(t *Tensor) string {
+
+	switch {
+	case len(t.Shape) == 1:
+		var result strings.Builder
+		for i, val := range t.Data {
+			if i > 0 {
+				result.WriteString(",")
+			}
+			result.WriteString(fmt.Sprintf("%.4f", val))
+		}
+		return "[" + result.String() + "]"
+	case len(t.Shape) == 2:
+		var result strings.Builder
+		rowLength := t.Shape[1]
+
+		result.WriteString("[\n")
+		for i, val := range t.Data {
+			if i%rowLength == 0 {
+				if i != 0 {
+					result.WriteString("],\n")
+				}
+				result.WriteString("  [")
+			} else {
+				result.WriteString(",")
+			}
+			result.WriteString(fmt.Sprintf("%.4f", val))
+		}
+		result.WriteString("]\n]")
+
+		return result.String()
+
+	case len(t.Shape) > 2:
+		return formatTensorRecursive(t.Data, t.Shape, 0)
+	default:
+		return "Unable to format tensor"
+	}
+
+}
+
+func formatTensorRecursive(data []float64, shape []int, level int) string {
+	if len(shape) == 0 {
+		return fmt.Sprintf("%.4f", data[0])
+	}
+
+	var result strings.Builder
+	if level != 0 {
+		result.WriteString("\n" + strings.Repeat(" ", level*2)) // Indentation for readability
+	}
+	result.WriteString("[")
+
+	numElements := shape[0]
+	subShape := shape[1:]
+	subSize := 1
+	for _, s := range subShape {
+		subSize *= s
+	}
+
+	for i := 0; i < numElements; i++ {
+		startIndex := i * subSize
+		endIndex := startIndex + subSize
+		result.WriteString(formatTensorRecursive(data[startIndex:endIndex], subShape, level+1))
+
+		if i < numElements-1 {
+			result.WriteString(",")
+
+		}
+	}
+
+	result.WriteString("]")
+
+	return result.String()
 }

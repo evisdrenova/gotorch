@@ -8,13 +8,21 @@
 
 4. Go's static typing, native concurrency (avoid GIL problem in python), efficient memory management, single binary deployment and more make it a better interface compared to python IMO
 
-Knowing the PyTorch is mainly implemented in c++ and c under the covers, I'm not expecting any performance gains by porting it to Go. But still, will be interesting to see how it compares.
+Knowing the PyTorch is mainly implemented in C++ and C under the covers, I'm not expecting any performance gains by porting it to Go. But still, will be interesting to see how it compares.
+
+Two other things:
+
+1. This isn't meant to be go bindings for pytorch. This is a full rewrite in go from the ground up. Not just a Go abstraction over the C and C++ files.
+
+2. This library only depends on the standard go library with no other dependencies
 
 # roadmap
 
 - ~~Tensor Operations: addition, subtraction, multiplication, division,~~ and more advanced operations like dot products, transposition, and reshaping.
 
 ~~- way to randomly generate tensors~~
+
+- a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)
 
 - Automatic Differentiation: basic version of autograd (forward & back propogation)
 

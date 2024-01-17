@@ -560,3 +560,35 @@ func Test_Random3x2(t *testing.T) {
 	}
 
 }
+
+func Test_FormatTensorVector(t *testing.T) {
+
+	tensor := NewTensor([]float64{1, 2, 3}, 3)
+	expected := "[1.0000,2.0000,3.0000]"
+
+	result := FormatTensor(tensor)
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func Test_FormatTensorMatrix(t *testing.T) {
+
+	tensor := NewTensor([]float64{1, 2, 3, 4, 5, 6}, 2, 3)
+	expected := "[\n  [1.0000,2.0000,3.0000],\n  [4.0000,5.0000,6.0000]\n]"
+
+	result := FormatTensor(tensor)
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
+
+func Test_FormatTensorDeepMatrix(t *testing.T) {
+	tensor := NewTensor([]float64{1, 2, 3, 4, 5, 6, 7, 8}, 2, 2, 2)
+	expected := "[\n  [\n    [1.0000,2.0000],\n    [3.0000,4.0000]],\n  [\n    [5.0000,6.0000],\n    [7.0000,8.0000]]]"
+
+	result := FormatTensor(tensor)
+	if result != expected {
+		t.Errorf("Expected %s, got %s", expected, result)
+	}
+}
