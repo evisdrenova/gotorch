@@ -3,6 +3,7 @@ package tensor
 import (
 	"fmt"
 	"gotorch/utils"
+	"math/rand"
 )
 
 /*
@@ -127,5 +128,26 @@ func Divide(input, other *Tensor) (*Tensor, error) {
 	}
 
 	return result, nil
+
+}
+
+// Returns a tensor filled with random numbers from a uniform distribution on the interval
+// rows determines how many rows are in the tensor
+// columns determines how many columns are in the tensor
+func Rand(rows, columns int) (*Tensor, error) {
+
+	if rows < 1 || columns < 1 {
+		return nil, fmt.Errorf("rows or columns must be greater than 0")
+	}
+
+	flatData := make([]float64, 0, rows*columns)
+
+	for i := 0; i < rows; i++ {
+		for i := 0; i < columns; i++ {
+			flatData = append(flatData, rand.Float64())
+		}
+	}
+
+	return &Tensor{Data: flatData, Shape: []int{rows, columns}}, nil
 
 }

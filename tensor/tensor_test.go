@@ -1,6 +1,7 @@
 package tensor
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -502,4 +503,60 @@ func Test_DivideTensorMatrix(t *testing.T) {
 			t.Errorf("incorrect division at index %d, expected: %v, got: %v", i, expected[i], v)
 		}
 	}
+}
+
+func Test_RandomError(t *testing.T) {
+
+	rows := 1
+	columns := 0
+	_, err := Rand(rows, columns)
+	if err == nil {
+		t.Errorf("Expected an error due to a row or column being 0, got: %d and %d", rows, columns)
+	}
+}
+
+func Test_Random1x2Tensor(t *testing.T) {
+
+	rows := 1
+	columns := 2
+	result, err := Rand(rows, columns)
+	if err != nil {
+		t.Errorf("Incorrect tensor construction, got: %d and %d", rows, columns)
+	}
+
+	expected := []float64{.23, .3}
+	if len(result.Data) != len(expected) {
+		t.Errorf("Resulting tensor has incorrect number of elements: got %v, want %v", len(result.Data), len(expected))
+	}
+
+	for i := range result.Data {
+		if result.Data[i] > 1 {
+			t.Errorf("Resulting value should be between 0 and 1 got: %v", result.Data[i])
+		}
+	}
+
+}
+
+func Test_Random3x2(t *testing.T) {
+
+	rows := 3
+	columns := 2
+	result, err := Rand(rows, columns)
+	if err != nil {
+		t.Errorf("Incorrect tensor construction, got: %d and %d", rows, columns)
+	}
+
+	fmt.Println("result", result)
+
+	expected := []float64{.5, .7, .4, .9, .1, .3}
+	if len(result.Data) != len(expected) {
+		t.Errorf("Resulting tensor has incorrect number of elements: got %v, want %v", len(result.Data), len(expected))
+	}
+
+	for i := range result.Data {
+		if result.Data[i] > 1 {
+			t.Errorf("Resulting value should be between 0 and 1 got: %v", result.Data[i])
+		}
+	}
+
 }

@@ -1,6 +1,6 @@
 # why?
 
-1. I want to better learn Pytorch and how it works so what better way than to just re-implement some of its core features.
+1. I want to better learn PyTorch and how it works so what better way than to just re-implement some of its core features.
 
 2. I write mainly in Go and haven't come across a lot of ML support in Go
 
@@ -8,11 +8,13 @@
 
 4. Go's static typing, native concurrency (avoid GIL problem in python), efficient memory management, single binary deployment and more make it a better interface compared to python IMO
 
-Knowing the Pytorch is mainly implemented in c++ and c under the covers, I'm not expecting any performance gains by porting it to Go. But still, will be interesting to see how it compares.
+Knowing the PyTorch is mainly implemented in c++ and c under the covers, I'm not expecting any performance gains by porting it to Go. But still, will be interesting to see how it compares.
 
 # roadmap
 
 - ~~Tensor Operations: addition, subtraction, multiplication, division,~~ and more advanced operations like dot products, transposition, and reshaping.
+
+~~- way to randomly generate tensors~~
 
 - Automatic Differentiation: basic version of autograd (forward & back propogation)
 
