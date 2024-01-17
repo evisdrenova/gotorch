@@ -12,7 +12,7 @@ Knowing the PyTorch is mainly implemented in C++ and C under the covers, I'm not
 
 Two other things:
 
-1. This isn't meant to be go bindings for pytorch. This is a full rewrite in go from the ground up. Not just a Go abstraction over the C and C++ files.
+1. This isn't meant to be go bindings for PyTorch. This is a full rewrite in go from the ground up. Not just a Go abstraction over the C and C++ files.
 
 2. This library only depends on the standard go library with no other dependencies
 
@@ -22,7 +22,7 @@ Two other things:
 
 ~~- way to randomly generate tensors~~
 
-- a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)
+~~- a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)~~
 
 - Automatic Differentiation: basic version of autograd (forward & back propogation)
 
@@ -37,6 +37,7 @@ Two other things:
 - ~~Data Handling: loading, save~~
 
 - Model Definition and Training Loop: A framework to define models, compile them with loss functions and optimizers, and a training loop to fit models to data.
+  (started but definitely not done)
 
 - A way to sample a model
 
