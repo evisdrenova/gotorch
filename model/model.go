@@ -35,6 +35,7 @@ func (m *Linear) Forward(input *tensor.Tensor) *tensor.Tensor {
 	return tensor.NewTensor(outputData, batchSize, 1)
 }
 
+// implements Fit function to train the model
 func Fit(model *Linear, data *tensor.Tensor, labels *tensor.Tensor, epochs int, learningRate float64) {
 	batchSize := data.Shape[0]
 	numFeatures := len(model.Weights)
