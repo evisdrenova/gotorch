@@ -28,6 +28,8 @@ Knowing the Pytorch is mainly implemented in c++ and c under the covers, I'm not
 
 - Model Definition and Training Loop: A framework to define models, compile them with loss functions and optimizers, and a training loop to fit models to data.
 
+- A way to sample a model
+
 - GPU Support ???????
 
 - Serialization: saving and loading models and their weights. Probably just model state and weights and not the entire model. [Reference](https://github.com/pytorch/pytorch/blob/761d6799beb3afa03657a71776412a2171ee7533/docs/source/notes/serialization.rst)
