@@ -6,8 +6,6 @@ import (
 	"github.com/zeebo/assert"
 )
 
-// checks if two slices are equal
-// this is faster than doing reflect.deepCopy since we know the types and values
 func Test_areSlicesEqual_true(t *testing.T) {
 	s1 := []int{1, 2, 3, 4}
 	s2 := []int{1, 2, 3, 4}
