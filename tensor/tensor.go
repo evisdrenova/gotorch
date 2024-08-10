@@ -164,6 +164,7 @@ func Rand(rows, columns int) (*Tensor, error) {
 func FormatTensor(t *Tensor) string {
 
 	switch {
+	// a shape of 1 means that it's already flat, so we can just write it out
 	case len(t.Shape) == 1:
 		var result strings.Builder
 		for i, val := range t.Data {
@@ -173,6 +174,7 @@ func FormatTensor(t *Tensor) string {
 			result.WriteString(fmt.Sprintf("%.4f", val))
 		}
 		return "[" + result.String() + "]"
+		//a shape of 2 means that it's not a flat tensor and has shape so we need to iterate through it
 	case len(t.Shape) == 2:
 		var result strings.Builder
 		rowLength := t.Shape[1]
