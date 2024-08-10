@@ -8,7 +8,8 @@ import (
 )
 
 /*
-The tensor package handles creating, updating and performing actions on tensors
+The tensor package handles creating, updating and performing actions on tensors.
+We normalize all tensors into a flattened 1D tensor to make it easy to add/multiple/etc. the tensors. We retain the original shape by storing the Shape in the tensor.Shape struct. We can always re-construct the tensors original shape then.
 */
 
 // Data holds the tensor data
@@ -42,7 +43,7 @@ func NewTensor(data interface{}, shape ...int) *Tensor {
 	}
 }
 
-// newTensorFrom2DSlice handles creation of a tensor from a 2D slice
+// newTensorFrom2DSlice handles creation of a tensor from a 2D slice by flattening it into a 1D tensor which makes it easier to work with
 func newTensorFrom2DSlice(data [][]float64) *Tensor {
 	if len(data) == 0 {
 		return &Tensor{Data: []float64{}, Shape: []int{0, 0}}
@@ -67,65 +68,69 @@ func (t *Tensor) Dims() int {
 	return len(t.Shape)
 }
 
-// adds two tensors together
+// Adds two tensors together
 // note: this does not currently support broadcasting to a common shape i.e. can't add a vector and a matrix
-func Add(input, other *Tensor) (*Tensor, error) {
+func Add(t1, t2 *Tensor) (*Tensor, error) {
 
-	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+	if !utils.AreSlicesEqual(t1.Shape, t2.Shape) {
 		return nil, fmt.Errorf("the two tensors must have the same shape in order to add them")
 	}
 
-	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+	result := NewTensor(make([]float64, len(t1.Data)), t1.Shape...)
 
-	for i := range input.Data {
-		result.Data[i] = input.Data[i] + other.Data[i]
+	// since the two tensors are the same shape we can just iterate over one and then index into both tensors
+	for i := range t1.Data {
+		result.Data[i] = t1.Data[i] + t2.Data[i]
 	}
 
 	return result, nil
 }
 
-func Subtract(input, other *Tensor) (*Tensor, error) {
+// Subtracts two tensors
+func Subtract(t1, t2 *Tensor) (*Tensor, error) {
 
-	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+	if !utils.AreSlicesEqual(t1.Shape, t2.Shape) {
 		return nil, fmt.Errorf("the two tensors must have the same shape in order to subtract them")
 	}
 
-	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+	result := NewTensor(make([]float64, len(t1.Data)), t2.Shape...)
 
-	for i := range input.Data {
-		result.Data[i] = input.Data[i] - other.Data[i]
+	for i := range t1.Data {
+		result.Data[i] = t1.Data[i] - t2.Data[i]
 	}
 
 	return result, nil
 
 }
 
-func Multiply(input, other *Tensor) (*Tensor, error) {
+// Multiplies two tensors
+func Multiply(t1, t2 *Tensor) (*Tensor, error) {
 
-	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+	if !utils.AreSlicesEqual(t1.Shape, t2.Shape) {
 		return nil, fmt.Errorf("the two tensors must have the same shape in order to multiply them")
 	}
 
-	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+	result := NewTensor(make([]float64, len(t1.Data)), t1.Shape...)
 
-	for i := range input.Data {
-		result.Data[i] = input.Data[i] * other.Data[i]
+	for i := range t1.Data {
+		result.Data[i] = t1.Data[i] * t2.Data[i]
 	}
 
 	return result, nil
 
 }
 
-func Divide(input, other *Tensor) (*Tensor, error) {
+// Divides two tensors
+func Divide(t1, t2 *Tensor) (*Tensor, error) {
 
-	if !utils.AreSlicesEqual(input.Shape, other.Shape) {
+	if !utils.AreSlicesEqual(t1.Shape, t2.Shape) {
 		return nil, fmt.Errorf("the two tensors must have the same shape in order to divide them")
 	}
 
-	result := NewTensor(make([]float64, len(input.Data)), input.Shape...)
+	result := NewTensor(make([]float64, len(t1.Data)), t1.Shape...)
 
-	for i := range input.Data {
-		result.Data[i] = input.Data[i] / other.Data[i]
+	for i := range t1.Data {
+		result.Data[i] = t1.Data[i] / t2.Data[i]
 	}
 
 	return result, nil
@@ -153,7 +158,7 @@ func Rand(rows, columns int) (*Tensor, error) {
 
 }
 
-// Given a tensor, FormatTensor will return the tensor the right shape according to the shape property. For example, if the shape of the tensor is []int{2 3},
+// Given a tensor, FormatTensor will return the tensor in the right shape according to the shape property. For example, if the shape of the tensor is []int{2 3},
 // meaning that is a 2x3 matrix, this function will return a multi-dimensional array with two sub arrays, each with three elements, essentially the expanded format of the tensor
 // honestly this is ugly but whatever for now, its just meant as a sanity check
 func FormatTensor(t *Tensor) string {
