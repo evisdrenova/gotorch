@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestLinearForward1x2Matrix(t *testing.T) {
+func TestLinearForward1x2Tensor(t *testing.T) {
 	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}})
 	weights := []float64{1.0, 2.0}
 	biases := []float64{0.5}
@@ -27,7 +27,7 @@ func TestLinearForward1x2Matrix(t *testing.T) {
 	}
 }
 
-func TestLinearForward2x2Matrix(t *testing.T) {
+func TestLinearForward2x2Tensor(t *testing.T) {
 	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}})
 	weights := []float64{1.0, 2.0}
 	biases := []float64{0.5}
@@ -47,7 +47,7 @@ func TestLinearForward2x2Matrix(t *testing.T) {
 	}
 }
 
-func TestLinearForward2x3Matrix(t *testing.T) {
+func TestLinearForward3x2Tensor(t *testing.T) {
 	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}})
 	weights := []float64{1.0, 2.0}
 	biases := []float64{0.5}
@@ -68,7 +68,42 @@ func TestLinearForward2x3Matrix(t *testing.T) {
 	}
 }
 
-func TestLinearBackward1x2Matrix(t *testing.T) {
+func TestLinearBackward1x2Tensor(t *testing.T) {
+
+	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}})
+	gradOutput := tensor.NewTensor([]float64{1.0, 2.0}, 1, 1) // Example gradient from next layer
+	weights := []float64{1.0, 2.0}
+	biases := []float64{0.5}
+	model := &Linear{Weights: weights, Biases: biases}
+
+	gradInput := model.Backward(inputTensor, gradOutput)
+
+	expectedGradWeights := []float64{1.0, 2.0}
+	expectedGradBiases := []float64{1.0}
+	expectedGradInput := []float64{1.0, 2.0}
+
+	// Compare the results
+	for i, grad := range model.GradWeights {
+		if grad != expectedGradWeights[i] {
+			t.Errorf("Expected gradWeight %v, got %v", expectedGradWeights[i], grad)
+		}
+	}
+
+	for i, grad := range model.GradBiases {
+		if grad != expectedGradBiases[i] {
+			t.Errorf("Expected gradBias %v, got %v", expectedGradBiases[i], grad)
+		}
+	}
+
+	for i, grad := range gradInput.Data {
+		if grad != expectedGradInput[i] {
+			t.Errorf("Expected gradInput %v, got %v", expectedGradInput[i], grad)
+		}
+	}
+
+}
+
+func TestLinearBackward2x2Tensor(t *testing.T) {
 
 	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}})
 	gradOutput := tensor.NewTensor([]float64{1.0, 2.0}, 2, 1) // Example gradient from next layer
@@ -78,9 +113,46 @@ func TestLinearBackward1x2Matrix(t *testing.T) {
 
 	gradInput := model.Backward(inputTensor, gradOutput)
 
-	expectedGradWeights := []float64{7.0, 10.0}        // Expected values
-	expectedGradBiases := []float64{3.0}               // Expected value
-	expectedGradInput := []float64{1.0, 2.0, 2.0, 4.0} // Expected value
+	//∑(gradOutput[i]×inputTensor[i,j])
+	// so batch 1 = (1.0×1.0)+(2.0×3.0)=1.0+6.0=7.0
+	// and  bacth 2 = (1.0×2.0)+(2.0×4.0)=2.0+8.0=10.0
+	expectedGradWeights := []float64{7.0, 10.0}
+	expectedGradBiases := []float64{3.0}
+	expectedGradInput := []float64{1.0, 2.0, 2.0, 4.0}
+
+	for i, grad := range model.GradWeights {
+		if grad != expectedGradWeights[i] {
+			t.Errorf("Expected gradWeight %v, got %v", expectedGradWeights[i], grad)
+		}
+	}
+
+	for i, grad := range model.GradBiases {
+		if grad != expectedGradBiases[i] {
+			t.Errorf("Expected gradBias %v, got %v", expectedGradBiases[i], grad)
+		}
+	}
+
+	for i, grad := range gradInput.Data {
+		if grad != expectedGradInput[i] {
+			t.Errorf("Expected gradInput %v, got %v", expectedGradInput[i], grad)
+		}
+	}
+
+}
+
+func TestLinearBackward3x2Tensor(t *testing.T) {
+
+	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}})
+	gradOutput := tensor.NewTensor([]float64{1.0, 2.0, 3.0}, 3, 1) // Example gradient from next layer
+	weights := []float64{1.0, 2.0}
+	biases := []float64{0.5}
+	model := &Linear{Weights: weights, Biases: biases}
+
+	gradInput := model.Backward(inputTensor, gradOutput)
+
+	expectedGradWeights := []float64{22.0, 28.0}
+	expectedGradBiases := []float64{6.0}
+	expectedGradInput := []float64{1.0, 2.0, 2.0, 4.0, 3.0, 6.0}
 
 	// Compare the results
 	for i, grad := range model.GradWeights {
