@@ -28,7 +28,7 @@ Im trying to include as many tests as I can to test everything. I'm also testing
 
 - ~~a way to format a tensor in it's expanded view and not flattened (mainly for sanity checks)~~
 
-- Automatic Differentiation: basic version of autograd (forward & back propogation)
+- ~~Automatic Differentiation: basic version of autograd (forward & back propogation)~~
 
 - Neural Network Layers: some sort of basic neural network layers (fully connected (dense) layers, convolutional layers, and recurrent layers)
 
@@ -36,7 +36,7 @@ Im trying to include as many tests as I can to test everything. I'm also testing
 
 - ~~Loss Functions: mean squared error (MSE),and binary cross-entropy, categorical cross entropy loss~~
 
-- Optimizers: Stochastic Gradient Descent (SGD), Adam, and RMSprop
+- Optimizers:~~ Stochastic Gradient Descent (SGD)~~, Adam, and RMSprop
 
 - ~~Data Handling: loading, save~~
 
