@@ -36,7 +36,7 @@ Im trying to include as many tests as I can to test everything. I'm also testing
 
 - ~~Loss Functions: mean squared error (MSE),and binary cross-entropy, categorical cross entropy loss~~
 
-- Optimizers:~~ Stochastic Gradient Descent (SGD)~~, Adam, and RMSprop
+- ~~Optimizers:Stochastic Gradient Descent (SGD)~~
 
 - ~~Data Handling: loading, save~~
 
