@@ -16,6 +16,10 @@ Two other things:
 
 2. This library only depends on the standard go library with no other dependencies
 
+# testing
+
+Im trying to include as many tests as I can to test everything. I'm also testing things side-by-side with pytorch to verify logic. It's not always perfect (for many reasons) but trying to be reasonably close.
+
 # roadmap
 
 - ~~Tensor Operations: addition, subtraction, multiplication, division,~~ and more advanced operations like dot products, transposition, and reshaping.

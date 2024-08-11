@@ -1,11 +1,33 @@
 package model
 
 import (
+	"fmt"
 	"gotorch/tensor"
 	"testing"
 )
 
-func TestLinearForward(t *testing.T) {
+func TestLinearForward1x2Matrix(t *testing.T) {
+	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}})
+	weights := []float64{1.0, 2.0}
+	biases := []float64{0.5}
+	model := &Linear{Weights: weights, Biases: biases}
+
+	expectedOutput := []float64{
+		1.0*weights[0] + 2.0*weights[1] + biases[0], // Output for first batch row
+	}
+
+	output := model.Forward(inputTensor)
+
+	fmt.Println("output", output)
+
+	for i := range expectedOutput {
+		if output.Data[i] != expectedOutput[i] {
+			t.Errorf("Expected output %v, got %v at index %d", expectedOutput[i], output.Data[i], i)
+		}
+	}
+}
+
+func TestLinearForward2x2Matrix(t *testing.T) {
 	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}})
 	weights := []float64{1.0, 2.0}
 	biases := []float64{0.5}
@@ -14,6 +36,27 @@ func TestLinearForward(t *testing.T) {
 	expectedOutput := []float64{
 		1.0*weights[0] + 2.0*weights[1] + biases[0], // Output for first batch row
 		3.0*weights[0] + 4.0*weights[1] + biases[0], // Output for second batch row
+	}
+
+	output := model.Forward(inputTensor)
+
+	for i := range expectedOutput {
+		if output.Data[i] != expectedOutput[i] {
+			t.Errorf("Expected output %v, got %v at index %d", expectedOutput[i], output.Data[i], i)
+		}
+	}
+}
+
+func TestLinearForward2x3Matrix(t *testing.T) {
+	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}})
+	weights := []float64{1.0, 2.0}
+	biases := []float64{0.5}
+	model := &Linear{Weights: weights, Biases: biases}
+
+	expectedOutput := []float64{
+		1.0*weights[0] + 2.0*weights[1] + biases[0], // Output for first batch row
+		3.0*weights[0] + 4.0*weights[1] + biases[0], // Output for second batch row
+		5.0*weights[0] + 6.0*weights[1] + biases[0], // Output for third batch row
 	}
 
 	output := model.Forward(inputTensor)
