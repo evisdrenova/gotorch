@@ -1,3 +1,4 @@
+// Package tensor contains all of the tensor operation functions
 package tensor
 
 import (

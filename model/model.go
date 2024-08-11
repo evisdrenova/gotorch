@@ -1,7 +1,9 @@
+// Package model contains all of the core model training functions
 package model
 
 import (
 	"fmt"
+	lf "gotorch/loss_functions"
 	"gotorch/tensor"
 )
 
@@ -68,39 +70,44 @@ func (m *Linear) Backward(input *tensor.Tensor, gradOutput *tensor.Tensor) *tens
 
 }
 
-// implements Fit function to train the model
-// func Fit(model *Linear, data *tensor.Tensor, labels *tensor.Tensor, epochs int, learningRate float64) {
-// 	batchSize := data.Shape[0]
-// 	numFeatures := len(model.Weights)
+// Defines the Train function which actually trains a model
+func Train(model *Linear, inputs, targets *tensor.Tensor, epochs int, learningRate float64) {
+	optimizer := &SGD{LearningRate: learningRate}
 
-// 	for epoch := 0; epoch < epochs; epoch++ {
+	for epoch := 0; epoch < epochs; epoch++ {
+		// Forward pass
+		predictions := model.Forward(inputs)
 
-// 		totalLoss := 0.0
+		// Compute loss
+		loss := lf.MSELoss(predictions, targets)
 
-// 		for i := 0; i < batchSize; i++ {
-// 			// get a single batch
-// 			inputBatch := tensor.NewTensor(data.Data[i*numFeatures:(i+1)*numFeatures], 1, numFeatures)
+		// Backward pass
+		gradOutput := tensor.NewTensor([]float64{1.0, 1.0}, 2, 1) // Placeholder for actual gradient calculation
+		model.Backward(inputs, gradOutput)
 
-// 			output := model.Forward(inputBatch)
-// 			expected := tensor.NewTensor([]float64{labels.Data[i]}, 1)
+		// Update weights
+		optimizer.Step(model)
 
-// 			// calc loss
-// 			lossTensor := nn.MSELoss(output, expected)
-// 			loss := lossTensor.Data[0]
-// 			totalLoss += loss
+		// Optionally print the loss
+		if epoch%10 == 0 {
+			fmt.Printf("Epoch %d: Loss = %f\n", epoch, loss)
+		}
+	}
+}
 
-// 			// gradient calculation for weights - replace this with SGD or something else
-// 			for j := range model.Weights {
-// 				model.Weights[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0]) * inputBatch.Data[j]
-// 			}
+type SGD struct {
+	LearningRate float64
+}
 
-// 			// gradient calculation for biases - replace this with SGD or something else
-// 			for j := range model.Biases {
-// 				model.Biases[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0])
-// 			}
-// 		}
+// implements stochastic gradient descent optimization function which updates the models weights and biases using the gradients computed during the backward pass
+func (s *SGD) Step(model *Linear) {
 
-// 		avgLoss := totalLoss / float64(batchSize)
-// 		fmt.Printf("Epoch [%d/%d], Loss: %.4f\n", epoch+1, epochs, avgLoss)
-// 	}
-// }
+	for i := range model.Weights {
+		model.Weights[i] -= s.LearningRate * model.GradWeights[i]
+	}
+
+	for i := range model.Biases {
+		model.Biases[i] -= s.LearningRate * model.GradBiases[i]
+	}
+
+}

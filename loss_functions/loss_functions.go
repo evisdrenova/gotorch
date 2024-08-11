@@ -1,4 +1,5 @@
-package nn
+// Package lf contains all of the loss functions
+package lf
 
 import (
 	"gotorch/tensor"

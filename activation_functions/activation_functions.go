@@ -1,4 +1,5 @@
-package nn
+// Package af contains all of the activation functions
+package af
 
 import (
 	"gotorch/tensor"
