@@ -1,6 +1,7 @@
 package nn
 
 import (
+	"gotorch/model"
 	"gotorch/tensor"
 	"math"
 	"reflect"
@@ -362,4 +363,37 @@ func Test_SoftmaxVector(t *testing.T) {
 		}
 	}
 
+}
+
+func TestSGDStep(t *testing.T) {
+	initialWeights := []float64{0.5, -1.5}
+	initialBiases := []float64{0.0}
+	gradWeights := []float64{0.1, -0.2}
+	gradBiases := []float64{0.05}
+
+	model := &model.Linear{
+		Weights:     initialWeights,
+		Biases:      initialBiases,
+		GradWeights: gradWeights,
+		GradBiases:  gradBiases,
+	}
+
+	optimizer := &SGD{LearningRate: 0.1}
+
+	expectedWeights := []float64{0.5 - 0.1*0.1, -1.5 - 0.1*(-0.2)} // {0.49, -1.48}
+	expectedBiases := []float64{0.0 - 0.1*0.05}                    // {-0.005}
+
+	optimizer.Step(model)
+
+	// Check if the weights are updated correctly
+	for i, weight := range model.Weights {
+		if weight != expectedWeights[i] {
+			t.Errorf("Weight %d: expected %f, got %f", i, expectedWeights[i], weight)
+		}
+	}
+
+	// Check if the biases are updated correctly
+	if model.Biases[0] != expectedBiases[0] {
+		t.Errorf("Bias: expected %f, got %f", expectedBiases[0], model.Biases[0])
+	}
 }
