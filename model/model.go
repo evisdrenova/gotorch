@@ -71,28 +71,38 @@ func (m *Linear) Backward(input *tensor.Tensor, gradOutput *tensor.Tensor) *tens
 }
 
 // Defines the Train function which actually trains a model
-func Train(model *Linear, inputs, targets *tensor.Tensor, epochs int, learningRate float64) {
+func (m *Linear) Train(model *Linear, inputs, targets *tensor.Tensor, epochs int, learningRate float64) {
 	optimizer := &SGD{LearningRate: learningRate}
 
 	for epoch := 0; epoch < epochs; epoch++ {
-		// Forward pass
+		// forward pass
 		predictions := model.Forward(inputs)
 
-		// Compute loss
+		// compute loss
 		loss := lf.MSELoss(predictions, targets)
 
-		// Backward pass
-		gradOutput := tensor.NewTensor([]float64{1.0, 1.0}, 2, 1) // Placeholder for actual gradient calculation
+		// compute the gradient of the loss with respect to the output (gradOutput)
+		gradOutputData := make([]float64, len(predictions.Data))
+		for i := 0; i < len(predictions.Data); i++ {
+			gradOutputData[i] = 2 * (predictions.Data[i] - targets.Data[i]) / float64(len(predictions.Data))
+		}
+		gradOutput := tensor.NewTensor(gradOutputData, predictions.Shape...)
+
+		// backward pass
 		model.Backward(inputs, gradOutput)
 
-		// Update weights
+		// update weights
 		optimizer.Step(model)
 
-		// Optionally print the loss
 		if epoch%10 == 0 {
 			fmt.Printf("Epoch %d: Loss = %f\n", epoch, loss)
 		}
 	}
+}
+
+// Defines a sample function which takes in a model and an input tensor and returns a new tensor
+func (m *Linear) Sample(model *Linear, newInput *tensor.Tensor) *tensor.Tensor {
+	return model.Forward(newInput)
 }
 
 type SGD struct {
