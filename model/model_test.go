@@ -6,17 +6,22 @@ import (
 )
 
 func TestLinearForward(t *testing.T) {
+	inputTensor := tensor.NewTensor([][]float64{{1.0, 2.0}, {3.0, 4.0}})
 	weights := []float64{1.0, 2.0}
 	biases := []float64{0.5}
 	model := &Linear{Weights: weights, Biases: biases}
 
-	inputData := tensor.NewTensor([]float64{3, 4}, 1, 2)
-	expectedOutput := 3*weights[0] + 4*weights[1] + biases[0]
+	expectedOutput := []float64{
+		1.0*weights[0] + 2.0*weights[1] + biases[0], // Output for first batch row
+		3.0*weights[0] + 4.0*weights[1] + biases[0], // Output for second batch row
+	}
 
-	output := model.Forward(inputData)
+	output := model.Forward(inputTensor)
 
-	if output.Data[0] != expectedOutput {
-		t.Errorf("Expected output %v, got %v", expectedOutput, output.Data[0])
+	for i := range expectedOutput {
+		if output.Data[i] != expectedOutput[i] {
+			t.Errorf("Expected output %v, got %v at index %d", expectedOutput[i], output.Data[i], i)
+		}
 	}
 }
 

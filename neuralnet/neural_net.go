@@ -7,7 +7,7 @@ import (
 
 const leaky_relu_constant = 0.01
 
-// implements a ReLu activation function on each element in a tensor where f(x) = max(0,x)
+// implements a ReLu activation function on each element in a tensor where f(x) = max(0,x) which essentially zeros out any negative values
 func ReLu(t *tensor.Tensor) *tensor.Tensor {
 	result := make([]float64, len(t.Data))
 	for i, val := range t.Data {
@@ -75,7 +75,7 @@ func MSELoss(input, target *tensor.Tensor) *tensor.Tensor {
 }
 
 // implements binary cross-entropy loss for binary class models
-// quantifies the difference between the predicted probability distribution of the model and the actual distribution of the labels and returns a number between [0,1],with 0 being a perfect mode
+// quantifies the difference between the predicted probability distribution of the model and the actual distribution of the labels and returns a number between [0,1],with 0 being a perfect model
 func BinaryCrossEntropyLoss(predications, target *tensor.Tensor) *tensor.Tensor {
 
 	if len(predications.Data) != len(target.Data) {

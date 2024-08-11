@@ -15,15 +15,17 @@ type Linear struct {
 	Biases  []float64
 }
 
+// Defines the forward propogation function
 func (m *Linear) Forward(input *tensor.Tensor) *tensor.Tensor {
 
 	if len(input.Shape) != 2 || input.Shape[1] != len(m.Weights) {
 		panic(fmt.Sprintf("input shape %v is not compatible with weights size %d", input.Shape, len(m.Weights)))
 	}
 
+	// sets the batch size to the number of rows in the tensor
 	batchSize := input.Shape[0]
 
-	// Prepare output tensor
+	// prepare output tensor
 	outputData := make([]float64, batchSize)
 	for i := 0; i < batchSize; i++ {
 		for j, weight := range m.Weights {

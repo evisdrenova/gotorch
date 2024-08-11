@@ -12,7 +12,7 @@ Knowing the PyTorch is mainly implemented in C++ and C under the covers, I'm not
 
 Two other things:
 
-1. This isn't meant to be go bindings for PyTorch. This is a full rewrite in go from the ground up. Not just a Go abstraction over the C and C++ files.
+1. This isn't meant to be go bindings for PyTorch. This is a full rewrite in go from the ground up. Not just a Go abstraction with C bindings.
 
 2. This library only depends on the standard go library with no other dependencies
 
