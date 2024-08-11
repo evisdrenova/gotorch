@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	nn "gotorch/neuralnet"
 	"gotorch/tensor"
 )
 
@@ -70,38 +69,38 @@ func (m *Linear) Backward(input *tensor.Tensor, gradOutput *tensor.Tensor) *tens
 }
 
 // implements Fit function to train the model
-func Fit(model *Linear, data *tensor.Tensor, labels *tensor.Tensor, epochs int, learningRate float64) {
-	batchSize := data.Shape[0]
-	numFeatures := len(model.Weights)
+// func Fit(model *Linear, data *tensor.Tensor, labels *tensor.Tensor, epochs int, learningRate float64) {
+// 	batchSize := data.Shape[0]
+// 	numFeatures := len(model.Weights)
 
-	for epoch := 0; epoch < epochs; epoch++ {
+// 	for epoch := 0; epoch < epochs; epoch++ {
 
-		totalLoss := 0.0
+// 		totalLoss := 0.0
 
-		for i := 0; i < batchSize; i++ {
-			// get a single batch
-			inputBatch := tensor.NewTensor(data.Data[i*numFeatures:(i+1)*numFeatures], 1, numFeatures)
+// 		for i := 0; i < batchSize; i++ {
+// 			// get a single batch
+// 			inputBatch := tensor.NewTensor(data.Data[i*numFeatures:(i+1)*numFeatures], 1, numFeatures)
 
-			output := model.Forward(inputBatch)
-			expected := tensor.NewTensor([]float64{labels.Data[i]}, 1)
+// 			output := model.Forward(inputBatch)
+// 			expected := tensor.NewTensor([]float64{labels.Data[i]}, 1)
 
-			// calc loss
-			lossTensor := nn.MSELoss(output, expected)
-			loss := lossTensor.Data[0]
-			totalLoss += loss
+// 			// calc loss
+// 			lossTensor := nn.MSELoss(output, expected)
+// 			loss := lossTensor.Data[0]
+// 			totalLoss += loss
 
-			// gradient calculation for weights - replace this with SGD or something else
-			for j := range model.Weights {
-				model.Weights[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0]) * inputBatch.Data[j]
-			}
+// 			// gradient calculation for weights - replace this with SGD or something else
+// 			for j := range model.Weights {
+// 				model.Weights[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0]) * inputBatch.Data[j]
+// 			}
 
-			// gradient calculation for biases - replace this with SGD or something else
-			for j := range model.Biases {
-				model.Biases[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0])
-			}
-		}
+// 			// gradient calculation for biases - replace this with SGD or something else
+// 			for j := range model.Biases {
+// 				model.Biases[j] -= learningRate * 2 * (output.Data[0] - expected.Data[0])
+// 			}
+// 		}
 
-		avgLoss := totalLoss / float64(batchSize)
-		fmt.Printf("Epoch [%d/%d], Loss: %.4f\n", epoch+1, epochs, avgLoss)
-	}
-}
+// 		avgLoss := totalLoss / float64(batchSize)
+// 		fmt.Printf("Epoch [%d/%d], Loss: %.4f\n", epoch+1, epochs, avgLoss)
+// 	}
+// }
