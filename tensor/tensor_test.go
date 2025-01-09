@@ -592,3 +592,138 @@ func Test_FormatTensorDeepMatrix(t *testing.T) {
 		t.Errorf("Expected %s, got %s", expected, result)
 	}
 }
+
+func Test_DotVectorVector(t *testing.T) {
+	v1 := NewTensor([]float64{1, 2, 3})
+	v2 := NewTensor([]float64{4, 5, 6})
+
+	result, err := Dot(v1, v2)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	expected := 32.0 // 1*4 + 2*5 + 3*6
+	if result.Data[0] != expected {
+		t.Errorf("vector dot product incorrect, got: %v, want: %v", result.Data[0], expected)
+	}
+}
+
+func Test_DotMatrixVector(t *testing.T) {
+	m1 := NewTensor([][]float64{{1, 2}, {3, 4}})
+	v1 := NewTensor([]float64{5, 6})
+
+	result, err := Dot(m1, v1)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	expected := []float64{17, 39} // [1*5 + 2*6, 3*5 + 4*6]
+	if !reflect.DeepEqual(result.Data, expected) {
+		t.Errorf("matrix-vector dot product incorrect, got: %v, want: %v", result.Data, expected)
+	}
+}
+
+func Test_DotMatrixMatrix(t *testing.T) {
+	m1 := NewTensor([][]float64{{1, 2}, {3, 4}})
+	m2 := NewTensor([][]float64{{5, 6}, {7, 8}})
+
+	result, err := Dot(m1, m2)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	expected := []float64{19, 22, 43, 50} // [[1*5 + 2*7, 1*6 + 2*8], [3*5 + 4*7, 3*6 + 4*8]]
+	if !reflect.DeepEqual(result.Data, expected) {
+		t.Errorf("matrix-matrix dot product incorrect, got: %v, want: %v", result.Data, expected)
+	}
+}
+
+func Test_Transpose2x3Matrix(t *testing.T) {
+	tensor := NewTensor([][]float64{{1, 2, 3}, {4, 5, 6}})
+	result := Transpose(tensor)
+
+	expectedShape := []int{3, 2}
+	expectedData := []float64{1, 4, 2, 5, 3, 6}
+
+	if !reflect.DeepEqual(result.Shape, expectedShape) {
+		t.Errorf("Incorrect shape after transpose: got %v, want %v", result.Shape, expectedShape)
+	}
+	if !reflect.DeepEqual(result.Data, expectedData) {
+		t.Errorf("Incorrect data after transpose: got %v, want %v", result.Data, expectedData)
+	}
+}
+
+func Test_TransposePanic(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Expected panic for non-2D tensor")
+		}
+	}()
+
+	tensor := NewTensor([]float64{1, 2, 3})
+	Transpose(tensor)
+}
+
+func Test_SumAxis0Matrix(t *testing.T) {
+	tensor := NewTensor([][]float64{{1, 2, 3}, {4, 5, 6}})
+	result := SumAxis(tensor, 0)
+
+	expectedShape := []int{3}
+	expectedData := []float64{5, 7, 9}
+
+	if !reflect.DeepEqual(result.Shape, expectedShape) {
+		t.Errorf("Incorrect shape after sum: got %v, want %v", result.Shape, expectedShape)
+	}
+	if !reflect.DeepEqual(result.Data, expectedData) {
+		t.Errorf("Incorrect data after sum: got %v, want %v", result.Data, expectedData)
+	}
+}
+
+func Test_SumAxisPanic(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Expected panic for invalid axis")
+		}
+	}()
+
+	tensor := NewTensor([][]float64{{1, 2}, {3, 4}})
+	SumAxis(tensor, 2) // Should panic - axis out of bounds
+}
+
+func Test_FormatTensorInvalidShape(t *testing.T) {
+	tensor := &Tensor{
+		Data:  []float64{1, 2, 3},
+		Shape: []int{}, // Invalid empty shape
+	}
+
+	result := FormatTensor(tensor)
+	expected := "Unable to format tensor"
+	if result != expected {
+		t.Errorf("Expected %s for invalid tensor, got %s", expected, result)
+	}
+}
+
+func Test_FormatTensorRecursive(t *testing.T) {
+	// Test 3D tensor formatting
+	data := []float64{1, 2, 3, 4, 5, 6, 7, 8}
+	shape := []int{2, 2, 2}
+
+	result := formatTensorRecursive(data, shape, 0)
+	expected := "[\n  [\n    [1.0000,2.0000],\n    [3.0000,4.0000]],\n  [\n    [5.0000,6.0000],\n    [7.0000,8.0000]]]"
+
+	if result != expected {
+		t.Errorf("Incorrect recursive formatting:\nexpected:\n%s\ngot:\n%s", expected, result)
+	}
+}
+
+func Test_FormatTensorRecursiveScalar(t *testing.T) {
+	data := []float64{3.14159}
+	shape := []int{}
+
+	result := formatTensorRecursive(data, shape, 0)
+	expected := "3.1416"
+
+	if result != expected {
+		t.Errorf("Incorrect scalar formatting: expected %s, got %s", expected, result)
+	}
+}

@@ -64,11 +64,9 @@ func Sigmoid(t *tensor.Tensor) *tensor.Tensor {
 
 // tanh activation function; f(x) = (e^(x) - e^(-x))/(e^(x) + e^(-x))
 func Tanh(t *tensor.Tensor) *tensor.Tensor {
-
 	result := make([]float64, len(t.Data))
 	for i := range t.Data {
-		result[i] = (math.Exp(t.Data[i]-math.Exp(-t.Data[i])) / (math.Exp(t.Data[i]) + math.Exp(-t.Data[i])))
+		result[i] = math.Tanh(t.Data[i])
 	}
 	return &tensor.Tensor{Data: result, Shape: t.Shape}
-
 }
